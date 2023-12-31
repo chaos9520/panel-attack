@@ -1,5 +1,5 @@
 require("util")
-require("table_util")
+local tableUtils = require("tableUtils")
 
 local consts = {}
 consts.FRAME_RATE = 1/60
@@ -9,7 +9,7 @@ consts.FRAME_RATE = 1/60
 consts.ENGINE_VERSIONS = {}
 consts.ENGINE_VERSIONS.PRE_TELEGRAPH = "045"
 consts.ENGINE_VERSIONS.TELEGRAPH_COMPATIBLE = "046"
-consts.ENGINE_VERSIONS.TOUCH_COMPATIBLE = "047"
+consts.ENGINE_VERSIONS.TOUCH_COMPATIBLE = "124"
 
 VERSION = consts.ENGINE_VERSIONS.TOUCH_COMPATIBLE -- The current engine version
 VERSION_MIN_VIEW = consts.ENGINE_VERSIONS.TELEGRAPH_COMPATIBLE -- The lowest version number that can be watched
@@ -126,7 +126,7 @@ difficulty_to_ncolors_1Ptime = {6,6,6,6}
 
 TIME_ATTACK_TIME = 120
 -- Yes, 2 is slower than 1 and 50..99 are the same.
-speed_to_rise_time = table.map(
+speed_to_rise_time = tableUtils.map(
    {942, 983, 838, 790, 755, 695, 649, 604, 570, 515,
     474, 444, 394, 370, 347, 325, 306, 289, 271, 256,
     240, 227, 213, 201, 189, 178, 169, 158, 148, 138,
@@ -159,11 +159,11 @@ panels_to_next_speed =
   45, 45, 45, 45, 45, 45, 45, 45, math.huge}
 
 -- What speed level you start on.
-level_to_starting_speed        = {  1,  5,  9, 13, 17, 21, 25, 29, 27, 32, 45}
+level_to_starting_speed        = {  1,  7, 13, 19, 25, 30, 36, 43, 49, 54, 60}
 -- How long you can spend at the top of the screen without dying, in frames ("Health").
 level_to_hang_time             = {121,101, 81, 66, 51, 41, 31, 21, 11,  1, 1}
 -- How many colors of panels can spawn in VS mode, not including metal panels.
-level_to_ncolors_vs            = {  5,  5,  5,  5,  5,  5,  5,  5,  6,  6, 6}
+level_to_ncolors_vs            = {  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 2}
 -- How many colors of panels can spawn in time trial mode.
 level_to_ncolors_time          = {  5,  5,  6,  6,  6,  6,  6,  6,  6,  6, 6}
 -- How long panels will hover if not supported by anything, in frames.

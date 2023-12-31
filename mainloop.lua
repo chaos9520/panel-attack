@@ -4,6 +4,7 @@ require("ChallengeMode")
 local select_screen = require("select_screen.select_screen")
 local replay_browser = require("replay_browser")
 local options = require("options")
+local tableUtils = require("tableUtils")
 local utf8 = require("utf8Additions")
 local analytics = require("analytics")
 local main_config_input = require("config_inputs")
@@ -150,7 +151,7 @@ function main_title()
         end
         percent =  bound(0, percent + increment, 1)
         
-        if love.mouse.isDown(1, 2, 3) or #love.touch.getTouches() > 0 or (table.length(this_frame_released_keys) > 0 and totalTime > 0.1) then
+        if love.mouse.isDown(1, 2, 3) or #love.touch.getTouches() > 0 or (tableUtils.length(this_frame_released_keys) > 0 and totalTime > 0.1) then
           stop_the_music()
           ret = {main_select_mode}
         end
@@ -204,7 +205,7 @@ do
       {loc("mm_1_vs"), main_local_vs_yourself_setup},
       {loc("mm_1_training"), training_setup},
       {loc("mm_1_challenge_mode"), challenge_mode_setup},
-      {loc("mm_2_vs_online", ""), main_net_vs_setup, {consts.SERVER_LOCATION}},
+      {"kornflakes' server", main_net_vs_setup, {"kornflak.es"}},
       {loc("mm_2_vs_local"), main_local_vs_setup},
       {loc("mm_replay_browser"), replay_browser.main},
       {loc("mm_configure"), main_config_input},
@@ -249,12 +250,10 @@ do
         infoYPosition = infoYPosition - fontHeight
       end
 
-      if GAME_UPDATER_GAME_VERSION then
-        gprintf("PA Version: " .. GAME_UPDATER_GAME_VERSION, -5, infoYPosition, canvas_width, "right")
+      gprintf("PA Version: Christmas/New Year's Build 2023" , -5, infoYPosition, canvas_width, "right")
         infoYPosition = infoYPosition - fontHeight
         if has_game_update then
           menu_draw(panels[config.panels].images.classic[1][1], 1262, 685)
-        end
       end
 
       local runningFromAutoUpdater = GAME_UPDATER_GAME_VERSION ~= nil
@@ -295,9 +294,9 @@ local function use_current_stage()
 end
 
 function pick_random_stage()
-  current_stage = table.getRandomElement(stages_ids_for_current_theme)
+  current_stage = tableUtils.getRandomElement(stages_ids_for_current_theme)
   if stages[current_stage]:is_bundle() then -- may pick a bundle!
-    current_stage = table.getRandomElement(stages[current_stage].sub_stages)
+    current_stage = tableUtils.getRandomElement(stages[current_stage].sub_stages)
   end
   use_current_stage()
 end
