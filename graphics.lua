@@ -14,7 +14,7 @@ for i = 14, 6, -1 do
   local x = -math.pi
   local step = math.pi * 2 / i
   for j = 1, i do
-    shake_arr[shake_idx] = (1 + math.cos(x)) / 2
+    shake_arr[shake_idx] = (1 + math.cos(x)) / 3
     x = x + step
     shake_idx = shake_idx + 1
   end
