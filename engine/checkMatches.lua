@@ -1,4 +1,5 @@
 local logger = require("logger")
+local tableUtils = require("tableUtils")
 
 local function sortByPopOrder(panelList, isGarbage)
   table.sort(panelList, function(a, b)
@@ -35,7 +36,7 @@ local function getMetalCount(panels)
 end
 
 local function isNewChainLink(matchingPanels)
-  return table.trueForAny(matchingPanels, function(panel)
+  return tableUtils.trueForAny(matchingPanels, function(panel)
     return panel.chaining
   end)
 end
@@ -328,10 +329,11 @@ function Stack:matchGarbagePanels(garbagePanels, garbageMatchTime, isChain, onSc
   end
 
   self:convertGarbagePanels(isChain)
-end
+end  
 
 -- checks the stack for garbage panels that have a negative y offset and assigns them a color from the gpanel_buffer
 function Stack:convertGarbagePanels(isChain)
+  love.math.getRandomSeed(self.match.seed)
   -- color assignments are done per row so we need to iterate the stack properly
   for row = 1, #self.panels do
     local garbagePanelRow = nil
@@ -342,7 +344,25 @@ function Stack:convertGarbagePanels(isChain)
         if garbagePanelRow == nil then
           garbagePanelRow = self:getGarbagePanelRow()
         end
-        panel.color = string.sub(garbagePanelRow, column, column) + 0
+        local color_rng = love.math.random(2)
+        local shock_rng = love.math.random(30)
+        if self.level <= 8 then
+          if color_rng == 1 then
+            panel.color = love.math.random(3, 5)
+          elseif shock_rng == 1 then
+            panel.color = 8
+          else
+            panel.color = string.sub(garbagePanelRow, column, column) + 0
+          end
+        else
+          if color_rng == 1 then
+            panel.color = love.math.random(3, 6)
+          elseif shock_rng == 1 then
+            panel.color = 8
+          else
+            panel.color = string.sub(garbagePanelRow, column, column) + 0
+          end
+        end
         if isChain then
           panel.chaining = true
         end
@@ -414,6 +434,17 @@ function Stack:recordChainHistory()
   currentChainData.starts[#currentChainData.starts + 1] = self.clock
 end
 
+local function margin_time(stopwatch)
+  local maxPeriod = 21600
+  local initialPeriod = 1
+  if stopwatch < initialPeriod then
+    return 1
+  else
+    local result = math.max(0.01, math.floor((1 - ((stopwatch - initialPeriod) / maxPeriod)) * 100) / 100)
+    return result
+  end
+end
+
 -- calculates the stoptime that would be awarded for a certain chain/combo based on the stack's settings
 function Stack:calculateStopTime(comboSize, toppedOut, isChain, chainCounter)
   local stopTime = 0
@@ -421,27 +452,27 @@ function Stack:calculateStopTime(comboSize, toppedOut, isChain, chainCounter)
     if toppedOut and isChain then
       if self.level then
         local length = (chainCounter > 4) and 6 or chainCounter
-        stopTime = -8 * self.level + 168 + (length - 1) * (-2 * self.level + 22)
+        stopTime = math.max(0, math.ceil((-8 * self.level + 168 + (length - 1) * (-2 * self.level + 22)) * margin_time(self.game_stopwatch)))
       else
         stopTime = stop_time_danger[self.difficulty]
       end
     elseif toppedOut then
       if self.level then
         local length = (comboSize < 9) and 2 or 3
-        stopTime = self.chain_coefficient * length + self.chain_constant
+        stopTime = math.max(0, math.ceil((self.chain_coefficient * length + self.chain_constant) * margin_time(self.game_stopwatch)))
       else
         stopTime = stop_time_danger[self.difficulty]
       end
     elseif isChain then
       if self.level then
         local length = math.min(chainCounter, 13)
-        stopTime = self.chain_coefficient * length + self.chain_constant
+        stopTime = math.max(0, math.ceil((self.chain_coefficient * length + self.chain_constant) * margin_time(self.game_stopwatch)))
       else
         stopTime = stop_time_chain[self.difficulty]
       end
     else
       if self.level then
-        stopTime = self.combo_coefficient * comboSize + self.combo_constant
+        stopTime = math.max(0, math.ceil((self.combo_coefficient * comboSize + self.combo_constant) * margin_time(self.game_stopwatch)))
       else
         stopTime = stop_time_combo[self.difficulty]
       end
