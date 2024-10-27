@@ -33,10 +33,15 @@ Client-Side Changes
 + GPM now calculates accurately.
 + APM now calculates accurately, and moves made during countdown are not counted towards APM.
 
-Other things I'm planning to implement:
+Other things I would like to implement:
 + Change analytics displayed based on the game mode being played.
 + Allow colorless panels to be cleared by regular panels. Colorless panels being cleared will turn into air, but colorless panels cannot clear garbage.
 + 1p vs garbage mode.
++ All-Clear bonus. I will need to figure out how many points an all-clear should give, and what garbage it should send in Vs modes.
++ Timed sets.
+    * The player with the higher amount of match wins is declared the winner of the set.
+    * If the set score is tied when time expires, then it is a draw. Thinking of using a default time of 15 minutes.
+    * The clock will not run while players are at the select screen.
 
 These will take time to figure out how to implement them correctly.
 
@@ -44,7 +49,7 @@ Server-Side Changes
 ==========
 + My ranking system has been implented. This is a very recent addition, and it still needs to be tested.
 + Matches no longer have to be played on the same level for it to be ranked. My ranking system does take into account level differences.
-  1-vs-11 matches have a value of 0, so that will basically be an unranked match.
+  Note: 1-vs-11 matches have a value of 0, so that will basically be an unranked match.
 + Touch is allowed to play ranked.
 
 Other things I plan to implment:
