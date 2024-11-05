@@ -15,7 +15,7 @@ ChallengeMode =
     local secondsToppedOutToLoseIncrement = 0.1
     local lineClearGPMBase = 4
     local lineClearGPMIncrement = 0.4
-    local lineHeightToKill = 5
+    local lineHeightToKill = 21
     local panelLevel = 10
 
     if difficulty == 1 then
@@ -24,6 +24,7 @@ ChallengeMode =
       secondsToppedOutToLoseIncrement = 0.78
       lineClearGPMBase = 1.5
       lineClearGPMIncrement = 1.5
+      lineHeightToKill = 7
       panelLevel = 1
     elseif difficulty == 2 then
       stageCount = 4
@@ -31,6 +32,7 @@ ChallengeMode =
       secondsToppedOutToLoseIncrement = 1.21
       lineClearGPMBase = 4.5
       lineClearGPMIncrement = 1.5
+      lineHeightToKill = 11
       panelLevel = 2
     elseif difficulty == 3 then
       stageCount = 6
@@ -38,8 +40,8 @@ ChallengeMode =
       secondsToppedOutToLoseIncrement = 1.09
       lineClearGPMBase = 6.75
       lineClearGPMIncrement = 1.05
+      lineHeightToKill = 16
       panelLevel = 3
-      lineHeightToKill = 5
     elseif difficulty == 4 then
       stageCount = 6
       secondsToppedOutToLoseBase = 2.34
@@ -47,7 +49,6 @@ ChallengeMode =
       lineClearGPMBase = 9
       lineClearGPMIncrement = 1
       panelLevel = 4
-      lineHeightToKill = 5
     elseif difficulty == 5 then
       stageCount = 8
       secondsToppedOutToLoseBase = 3.51
@@ -102,21 +103,28 @@ ChallengeMode =
       secondsToppedOutToLoseBase = 40
       secondsToppedOutToLoseIncrement = 16
       lineClearGPMBase = 22.75
-      lineClearGPMIncrement = 1.45
-      panelLevel = 13
+      lineClearGPMIncrement = 2.65
+      panelLevel = 12
     elseif difficulty == 13 then
       stageCount = 6
       secondsToppedOutToLoseBase = 40
       secondsToppedOutToLoseIncrement = 16
       lineClearGPMBase = 22.75
-      lineClearGPMIncrement = 1.05
-      panelLevel = 14
+      lineClearGPMIncrement = 2.05
+      panelLevel = 13
     elseif difficulty == 14 then
       stageCount = 6
       secondsToppedOutToLoseBase = 40
       secondsToppedOutToLoseIncrement = 16
       lineClearGPMBase = 22.75
-      lineClearGPMIncrement = 0.65
+      lineClearGPMIncrement = 1.45
+      panelLevel = 14
+    elseif difficulty == 15 then
+      stageCount = 6
+      secondsToppedOutToLoseBase = 40
+      secondsToppedOutToLoseIncrement = 16
+      lineClearGPMBase = 22.75
+      lineClearGPMIncrement = 0.85
       panelLevel = 15
     end
 

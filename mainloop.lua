@@ -250,7 +250,7 @@ do
         infoYPosition = infoYPosition - fontHeight
       end
 
-      gprintf("PA Version: Chaos Build v1.0" , -5, infoYPosition, canvas_width, "right")
+      gprintf("PA Version: Chaos Build" , -5, infoYPosition, canvas_width, "right")
         infoYPosition = infoYPosition - fontHeight
         if has_game_update then
           menu_draw(panels[config.panels].images.classic[1][1], 1262, 685)
@@ -587,6 +587,7 @@ end
 function challenge_mode_setup()
   local difficultySettings = {}
   local customModeID = 1
+  difficultySettings[#difficultySettings+1] = { name = loc("challenge_difficulty_" .. #difficultySettings+1), challengeMode = ChallengeMode(#difficultySettings+1) }
   difficultySettings[#difficultySettings+1] = { name = loc("challenge_difficulty_" .. #difficultySettings+1), challengeMode = ChallengeMode(#difficultySettings+1) }
   difficultySettings[#difficultySettings+1] = { name = loc("challenge_difficulty_" .. #difficultySettings+1), challengeMode = ChallengeMode(#difficultySettings+1) }
   difficultySettings[#difficultySettings+1] = { name = loc("challenge_difficulty_" .. #difficultySettings+1), challengeMode = ChallengeMode(#difficultySettings+1) }

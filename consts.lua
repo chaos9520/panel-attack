@@ -203,11 +203,11 @@ level_to_combo_coefficient     = {  7,  6,  5,  5,  4,  4,  3,  3,  3,  3,  2,  
 level_to_chain_constant        = {170,154,140,128,116,105, 96, 87, 79, 72, 65, 45, 49, 54, 60}
 level_to_chain_coefficient     = {  8,  7,  7,  6,  5,  5,  4,  4,  3,  3,  3,  1,  2,  2,  2}
 -- How many panels you have to pop to earn a metal panel in your next row.
-level_to_metal_panel_frequency = { 11, 18, 21, 25, 27, 31, 31, 37, 36, 40, 43, 21, 22, 24, 25}
+level_to_metal_panel_frequency = { 17, 23, 25, 30, 31, 35, 34, 40, 39, 42, 45, 21, 22, 24, 25}
 -- How many panels you can have at most in your metal panel queue.
 level_to_metal_panel_cap       = { 14, 13, 12, 11, 10,  9,  8,  8,  7,  6,  6,  6,  6,  6,  6}
 -- How the amount of garbage pieces in your queue affect stop and shake time.
-level_to_garbage_margin        = {  8, 13, 15, 19, 20, 23, 23, 27, 27, 30, 32, 15, 16, 18, 18}
+level_to_garbage_margin        = { 12, 17, 19, 22, 23, 26, 25, 30, 29, 30, 34, 15, 16, 18, 18}
 
 -- Stage clear seems to use a variant of vs mode's speed system,
 -- except that the amount of time between increases is not constant.

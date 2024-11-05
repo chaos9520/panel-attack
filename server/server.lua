@@ -436,7 +436,7 @@ function Server:calculate_rating_adjustment(Rc, Ro, Oa, Rd, Ra, room) -- -- prin
 
   Oe = 1 / (1 + 10 ^ ((Ro - Rc) / RATING_SPREAD_MODIFIER))
   Rd = math.max(10, (DEVIATION_SPREAD - math.log(Rc, MAX_TARGET_RATING) * DEVIATION_SPREAD) + (Rc / (MAX_TARGET_RATING / 10)))
-  Ra = (math.min(room.a.level, room.b.level) / 10) * ((10 - math.abs(room.a.level - room.b.level)) * 0.1)
+  Ra = (math.min(room.a.level, room.b.level) / 8) * ((10 - math.abs(room.a.level - room.b.level)) * 0.1)
   Rn = math.max(MIN_ALLOWED_RATING, Rc + Rd * Ra * (Oa - Oe))
   
   return Rn

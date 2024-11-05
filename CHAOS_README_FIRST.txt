@@ -1,4 +1,8 @@
-Everything seems fixed as far as I can tell. Need to test the server-side things again.
+Latest updates
+==========
++ Added 'Chaos Mode: 4 Colors' difficulty to Challenge Mode.
++ Currently testing different damage and LineHeightToKill values for a more realistic gameplay.
++ Removed a bunch of 'stuff'.
 
 VERY IMPORTANT: This build is based on an older version of stable, so it is not up-to-date with
 the current version of stable (May 2024 at the time of uploading this).
@@ -37,20 +41,23 @@ Other things I would like to implement:
 + Change analytics displayed based on the game mode being played.
 + Allow colorless panels to be cleared by regular panels. Colorless panels being cleared will turn into air, but colorless panels cannot clear garbage.
 + 1p vs garbage mode.
-+ All-Clear bonus. I will need to figure out how many points an all-clear should give, and what garbage it should send in Vs modes.
-+ Timed sets.
-    * The player with the higher amount of match wins is declared the winner of the set.
-    * If the set score is tied when time expires, then it is a draw. Thinking of using a default time of 15 minutes.
-    * The clock will not run while players are at the select screen.
++ All-Clear bonus.
+  * I will need to figure out how many points an all-clear should give.
+  * Maybe make all-clear an alternate win condition in Challenge Mode and 2p vs...?
++ Timed sets for ranked play.
+  * Win conditions: One player reaches 10 wins, or one player has a higher win count after time has expired.
+  * The set will end in a draw if win counts are tied when time expires.
+  * Thinking of using a default time of 30 minutes.
+  * The clock will not run while players are at the select screen.
 
 These will take time to figure out how to implement them correctly.
 
 Server-Side Changes
 ==========
-+ My ranking system has been implented. This is a very recent addition, and it still needs to be tested.
-+ Matches no longer have to be played on the same level for it to be ranked. My ranking system does take into account level differences.
++ My ranking system has been implented. This is a very recent addition, and it still needs to be tested. Level 8 is the 'gold standard' now, as it is the closest to 10 on the normal build.
++ Matches no longer have to be played on the same level for it to be ranked. My ranking system does take level differences into account.
   Note: 1-vs-11 matches have a value of 0, so that will basically be an unranked match.
 + Touch is allowed to play ranked.
 
-Other things I plan to implment:
-All matches within range of each other will be ranked.
+Other things I plan to implement:
+All matches in which both players' ratings are within range of each other will be ranked.

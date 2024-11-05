@@ -62,11 +62,14 @@ function Health:receiveGarbage(frameToReceive, garbageList)
       end
 
       if countGarbage then
-        local damage = (height * width) / 6
+        local damage_height = (height * (height + 1)) / 2
+        local damage = (damage_height * width) / 6
         if from_chain then
-          damage = math.min(12, (height * width) / 6)
+          damage = damage + 1
         elseif metal then
-          damage = 1.5
+          damage = 3.5
+        else
+          damage = damage + 1
         end
         self.currentLines = self.currentLines + damage
       end
