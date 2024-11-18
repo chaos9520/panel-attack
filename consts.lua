@@ -14,6 +14,8 @@ consts.ENGINE_VERSIONS.TOUCH_COMPATIBLE = "952"
 VERSION = consts.ENGINE_VERSIONS.TOUCH_COMPATIBLE -- The current engine version
 VERSION_MIN_VIEW = consts.ENGINE_VERSIONS.TELEGRAPH_COMPATIBLE -- The lowest version number that can be watched
 
+ENGINE_VERSION = VERSION -- temporary until sceneRefactor lands on beta
+
 consts.COUNTDOWN_CURSOR_SPEED = 4 --one move every this many frames
 consts.COUNTDOWN_LENGTH = 180 --3 seconds at 60 fps
 
@@ -27,7 +29,7 @@ canvas_height = 720
 global_background_color = { 0.0, 0.0, 0.0 }
 
 mouse_pointer_timeout = 1.5 --seconds
-RATING_SPREAD_MODIFIER = 1000 -- rating players must be within to play ranked
+RATING_SPREAD_MODIFIER = 400 -- rating players must be within to play ranked
 
 super_selection_duration = 30 -- frames (reminder: 60 frames per sec)
 super_selection_enable_ratio = 0.3 -- ratio at which super enable is considered started (cancelling it won't validate a character)
@@ -96,7 +98,7 @@ score_chain_TA = {  0,   50,   80,  150,  300,
 
 GFX_SCALE = 3
 
--- frames to use for the card animation
+-- frames of the card animation and corresponding y offset
 card_animation = {false,
    -1, 0, 1, 2, 3, 4, 4, 5, 5, 6,
    6, 7, 7, 8, 8, 8, 9, 9, 9, 9,
@@ -105,11 +107,12 @@ card_animation = {false,
    11}
 
 -- The popping particle animation. First number is how far the particles go, second is which frame to show from the spritesheet
- popfx_burst_animation = {{1, 1}, {4, 1}, {7, 1}, {8, 1},
+popfx_burst_animation = {{1, 1}, {4, 1}, {7, 1}, {8, 1},
     {9, 1}, {9, 1}, {10, 1}, {10, 2}, {10, 2}, {10, 3},
     {10, 3}, {10, 4}, {10, 4}, {10, 5}, {10, 5}, {10, 6}, {10, 6}, {10, 7}, {10, 7}, {10, 8}, {10, 8}, {10, 8}}
 
-  popfx_fade_animation = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8}
+-- The fade effect animation that happens when a panel disappears. Just the frame to use, note 0 is unused right now which is sad
+popfx_fade_animation = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8}
 
 FC_HOVER = {  8,  6,  5,  4}
 -- TODO: delete FC_MATCH?
@@ -121,8 +124,8 @@ stop_time_combo =  {120, 90, 60, 30}
 stop_time_chain =  {150,113, 75, 45}
 stop_time_danger = {180,135, 90, 60}
 
-difficulty_to_ncolors_endless = {4,5,6,7}
-difficulty_to_ncolors_1Ptime = {4,5,6,7}
+difficulty_to_ncolors_endless = { 4, 5, 6, 7}
+difficulty_to_ncolors_1Ptime = { 4, 5, 6, 7}
 
 TIME_ATTACK_TIME = 120
 -- Yes, 2 is slower than 1 and 50..99 are the same.
@@ -158,56 +161,38 @@ panels_to_next_speed =
   45, 45, 45, 45, 45, 45, 45, 45, 45, 45,
   45, 45, 45, 45, 45, 45, 45, 45, math.huge}
 
-  LEVEL_DESCRIPTION = {
-    "Beginner (4 colors)",
-    "Beginner Plus (5 colors)",
-    "Novice (5 colors)",
-    "Novice Plus (6 colors)",
-    "Intermediate (5 colors)",
-    "Intermediate Plus (6 colors)",
-    "Advanced (5 colors)",
-    "Advanced Plus (6 colors)",
-    "Expert (5 colors)",
-    "Expert Plus (6 colors)",
-    "Master (7 colors)",
-    "Chaos Mode I (4 colors)",
-    "Chaos Mode II (5 colors)",
-    "Chaos Mode III (6 colors)",
-    "Chaos Mode IV (7 colors)",
-    }
-
 -- What speed level you start on.
-level_to_starting_speed        = { 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 96, 95, 94, 93}
+level_to_starting_speed        = { 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92}
 -- How long you can spend at the top of the screen without dying, in frames ("Health").
-level_to_hang_time             = {159,122, 94, 72, 56, 43, 33, 25, 20, 15, 12,  1,  1,  1,  1}
+level_to_hang_time             = {159,122, 94, 72, 56, 43, 33, 25, 20, 15, 12}
 -- How many colors of panels can spawn in VS mode, not including metal panels.
-level_to_ncolors_vs            = {  4,  5,  5,  6,  5,  6,  5,  6,  5,  6,  7,  4,  5,  6,  7}
+level_to_ncolors_vs            = {  4,  5,  5,  6,  5,  6,  5,  6,  5,  6,  7}
 -- How many colors of panels can spawn in time trial mode.
-level_to_ncolors_time          = {  4,  5,  5,  6,  5,  6,  5,  6,  5,  6,  7,  4,  5,  6,  7}
+level_to_ncolors_time          = {  4,  5,  5,  6,  5,  6,  5,  6,  5,  6,  7}
 -- How long panels will hover if not supported by anything, in frames.
-level_to_hover                 = {  9,  9,  8,  7,  6,  6,  5,  5,  4,  4,  4,  4,  5,  6,  7}
+level_to_hover                 = {  9,  9,  8,  7,  6,  6,  5,  5,  4,  4,  4}
 -- How long newly-transformed panels from garbage will hover before falling, in frames.
-level_to_garbage_panel_hover   = { 46, 35, 27, 21, 16, 12,  9,  7,  6,  4,  3,  3,  3,  3,  3}
+level_to_garbage_panel_hover   = { 46, 35, 27, 21, 16, 12,  9,  7,  6,  4,  3}
 -- How long panels flash for before popping, in frames.
-level_to_flash                 = { 60, 54, 49, 45, 41, 37, 33, 30, 27, 25, 23, 23, 23, 23, 23}
+level_to_flash                 = { 60, 54, 49, 45, 41, 37, 33, 30, 27, 25, 23}
 -- How long panels remain in their "face" frame before popping, in frames.
 -- (They actually stay in their face frame for five frames longer than the numbers in this table for some reason...
 --  This makes timings accurate with Tetris Attack / Panel de Pon SFC.)
-level_to_face                  = { 20, 19, 17, 15, 14, 13, 12, 11, 10,  9,  8,  8,  8,  8,  8}
+level_to_face                  = { 20, 19, 17, 15, 14, 13, 12, 11, 10,  9,  8}
 -- How long panels take to pop after finishing their "face" frame, in frames.
-level_to_pop                   = { 10,  9,  9,  9,  8,  8,  8,  7,  7,  7,  7,  7,  7,  7,  7}
+level_to_pop                   = { 10,  9,  9,  9,  8,  8,  8,  7,  7,  7,  7}
 -- How long the stack stops when you clear combos, in frames.
-level_to_combo_constant        = {141,129,117,106, 97, 88, 80, 73, 66, 60, 55, 37, 41, 45, 50}
-level_to_combo_coefficient     = {  7,  6,  5,  5,  4,  4,  3,  3,  3,  3,  2,  1,  2,  2,  2}
+level_to_combo_constant        = {141,129,117,106, 97, 88, 80, 73, 66, 60, 55}
+level_to_combo_coefficient     = {  7,  6,  5,  5,  4,  4,  3,  3,  3,  3,  2}
 -- How long the stack stops when you clear chains, in frames.
-level_to_chain_constant        = {170,154,140,128,116,105, 96, 87, 79, 72, 65, 45, 49, 54, 60}
-level_to_chain_coefficient     = {  8,  7,  7,  6,  5,  5,  4,  4,  3,  3,  3,  1,  2,  2,  2}
+level_to_chain_constant        = {170,154,140,128,116,105, 96, 87, 79, 72, 65}
+level_to_chain_coefficient     = {  8,  7,  7,  6,  5,  5,  4,  4,  3,  3,  3}
 -- How many panels you have to pop to earn a metal panel in your next row.
-level_to_metal_panel_frequency = { 17, 23, 25, 30, 31, 35, 34, 40, 39, 42, 45, 21, 22, 24, 25}
+level_to_metal_panel_frequency = { 17, 23, 25, 30, 31, 35, 34, 40, 39, 42, 45}
 -- How many panels you can have at most in your metal panel queue.
-level_to_metal_panel_cap       = { 14, 13, 12, 11, 10,  9,  8,  8,  7,  6,  6,  6,  6,  6,  6}
+level_to_metal_panel_cap       = { 14, 13, 12, 11, 10,  9,  8,  8,  7,  6,  6}
 -- How the amount of garbage pieces in your queue affect stop and shake time.
-level_to_garbage_margin        = { 12, 17, 19, 22, 23, 26, 25, 30, 29, 30, 34, 15, 16, 18, 18}
+level_to_garbage_margin        = { 12, 17, 19, 22, 23, 26, 25, 30, 29, 30, 34}
 
 -- Stage clear seems to use a variant of vs mode's speed system,
 -- except that the amount of time between increases is not constant.
@@ -267,16 +252,5 @@ colors = {  red     = {220/255, 50/255,  47/255 },
             dgray   = {28/255,  28/255,  28/255 }}
 
 e_chain_or_combo = { combo=0, chain=1, shock=2 }
-
-garbage_to_shake_time = {
-  [0] = 0,
-  18, 18, 18, 18, 24, 42, 42, 42, 42, 42,
-  42, 66, 66, 66, 66, 66, 66, 66, 66, 66,
-  66, 66, 66, 76
-}
-
-for i=25,1000 do
-  garbage_to_shake_time[i] = garbage_to_shake_time[i-1]
-end
 
 return consts

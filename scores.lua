@@ -10,7 +10,7 @@ Scores =
     self.version = currentVersion
 
     self.vsSelf = {}
-    for i = 1, 15, 1 do
+    for i = 1, 11, 1 do
       self.vsSelf[i] = {}
       self.vsSelf[i]["record"] = 0
       self.vsSelf[i]["last"] = 0

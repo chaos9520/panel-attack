@@ -15,7 +15,7 @@ ChallengeMode =
     local secondsToppedOutToLoseIncrement = 0.1
     local lineClearGPMBase = 4
     local lineClearGPMIncrement = 0.4
-    local lineHeightToKill = 21
+    local lineHeightToKill =  difficulty * 2.5 + 6
     local panelLevel = 10
 
     if difficulty == 1 then
@@ -24,7 +24,6 @@ ChallengeMode =
       secondsToppedOutToLoseIncrement = 0.78
       lineClearGPMBase = 1.5
       lineClearGPMIncrement = 1.5
-      lineHeightToKill = 7
       panelLevel = 1
     elseif difficulty == 2 then
       stageCount = 4
@@ -32,7 +31,6 @@ ChallengeMode =
       secondsToppedOutToLoseIncrement = 1.21
       lineClearGPMBase = 4.5
       lineClearGPMIncrement = 1.5
-      lineHeightToKill = 11
       panelLevel = 2
     elseif difficulty == 3 then
       stageCount = 6
@@ -40,7 +38,6 @@ ChallengeMode =
       secondsToppedOutToLoseIncrement = 1.09
       lineClearGPMBase = 6.75
       lineClearGPMIncrement = 1.05
-      lineHeightToKill = 16
       panelLevel = 3
     elseif difficulty == 4 then
       stageCount = 6
@@ -98,34 +95,6 @@ ChallengeMode =
       lineClearGPMBase = 19.5
       lineClearGPMIncrement = 0.72
       panelLevel = 11
-    elseif difficulty == 12 then
-      stageCount = 6
-      secondsToppedOutToLoseBase = 40
-      secondsToppedOutToLoseIncrement = 16
-      lineClearGPMBase = 22.75
-      lineClearGPMIncrement = 2.65
-      panelLevel = 12
-    elseif difficulty == 13 then
-      stageCount = 6
-      secondsToppedOutToLoseBase = 40
-      secondsToppedOutToLoseIncrement = 16
-      lineClearGPMBase = 22.75
-      lineClearGPMIncrement = 2.05
-      panelLevel = 13
-    elseif difficulty == 14 then
-      stageCount = 6
-      secondsToppedOutToLoseBase = 40
-      secondsToppedOutToLoseIncrement = 16
-      lineClearGPMBase = 22.75
-      lineClearGPMIncrement = 1.45
-      panelLevel = 14
-    elseif difficulty == 15 then
-      stageCount = 6
-      secondsToppedOutToLoseBase = 40
-      secondsToppedOutToLoseIncrement = 16
-      lineClearGPMBase = 22.75
-      lineClearGPMIncrement = 0.85
-      panelLevel = 15
     end
 
     for stageIndex = 1, stageCount, 1 do
@@ -182,9 +151,9 @@ function ChallengeMode.render(self)
 
   local drawX = canvas_width / 2
   local drawY = 440
-  local limit = 150
+  local limit = 400
   gprintf(loc("difficulty"), drawX - limit/2, drawY, limit, "center", nil, nil, 10)
-  gprintf(self.difficultyName, drawX - limit/2, drawY + 26, limit, "center", nil, nil, 6)
+  gprintf(self.difficultyName, drawX - limit/2, drawY + 26, limit, "center", nil, nil, 10)
 
   drawY = 520
   gprintf("Stage", drawX - limit/2, drawY, limit, "center", nil, nil, 10)

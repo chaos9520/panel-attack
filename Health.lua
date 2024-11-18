@@ -11,7 +11,6 @@ Health =
     self.lineClearRate = lineClearGPM / 60 -- How many "lines" we clear per second. Essentially how fast we recover.
     self.currentLines = 0 -- The current number of "lines" simulated
     self.height = height -- How many "lines" need to be accumulated before we are "topped" out.
-    self.lastWasFourCombo = false -- Tracks if the last combo was a +4. If two +4s hit in a row, it only counts as 1 "line"
     self.clock = 0 -- Current clock time, this should match the opponent
     self.riseLevel = riseLevel -- The current level used to simulate "rise speed"
     self.currentRiseSpeed = level_to_starting_speed[self.riseLevel] -- rise speed is just like the normal game for now, lines are added faster the longer the match goes
@@ -47,31 +46,18 @@ function Health:receiveGarbage(frameToReceive, garbageList)
     local width, height, metal, from_chain, finalized = unpack(v)
     if width and height then
       local countGarbage = true
-      if not metal and not from_chain and width == 3 then
-        if self.lastWasFourCombo then
-          -- Two four combos in a row, don't count an extra line
-          self.lastWasFourCombo = false
-          countGarbage = false
-        else
-          -- First four combo
-          self.lastWasFourCombo = false
-        end
-      else
-        -- non four combo
-        self.lastWasFourCombo = false
-      end
 
       if countGarbage then
         local damage_height = (height * (height + 1)) / 2
         local damage = (damage_height * width) / 6
         if from_chain then
-          damage = damage + 1
+          damage = damage
         elseif metal then
-          damage = 3.5
+          damage = 1.5
         else
-          damage = damage + 1
+          damage = damage
         end
-        self.currentLines = self.currentLines + damage
+        self.currentLines = math.min(self.height * 1.2, self.currentLines + damage)
       end
     end
   end

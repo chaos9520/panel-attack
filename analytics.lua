@@ -60,9 +60,6 @@ local function analytic_clear(analytic)
   analytic.reached_chains = {}
   analytic.used_combos = {}
   analytic.shockGarbageCount = 0
-  analytic.wasted_panels = 0
-  analytic.garbage_sent = 0
-  analytic.garbage_cleared = 0
 end
 
 local amount_of_garbages_lines_per_combo = {0,0,0,0.5,0.7,0.8,1,1,1.3,1.7,
@@ -185,7 +182,6 @@ local function output_pretty_analytics()
     text = text .. titles[i]
     text = text .. "Destroyed " .. analytic.destroyed_panels .. " panels.\n"
     text = text .. "Wasted" .. analytic.wasted_panels .. " panels.\n"
-    text = text .. "Cleared" .. analytic.garbage_cleared .. "garbage panels.\n"
     text = text .. "Sent " .. analytic.sent_garbage_lines .. " lines of garbage.\n"
     text = text .. "Moved " .. analytic.move_count .. " times.\n"
     text = text .. "Swapped " .. analytic.swap_count .. " times.\n"
@@ -207,7 +203,7 @@ local function output_pretty_analytics()
   end
   pcall(
     function()
-      local file = love.filesystem.newFile("analytics_chaos.txt")
+      local file = love.filesystem.newFile("analytics.txt")
       file:open("w")
       file:write(text)
       file:close()
