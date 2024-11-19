@@ -203,7 +203,7 @@ local function output_pretty_analytics()
   end
   pcall(
     function()
-      local file = love.filesystem.newFile("analytics.txt")
+      local file = love.filesystem.newFile("analytics_chaos.txt")
       file:open("w")
       file:write(text)
       file:close()

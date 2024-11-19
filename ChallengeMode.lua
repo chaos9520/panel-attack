@@ -15,7 +15,7 @@ ChallengeMode =
     local secondsToppedOutToLoseIncrement = 0.1
     local lineClearGPMBase = 4
     local lineClearGPMIncrement = 0.4
-    local lineHeightToKill =  difficulty * 2.5 + 6
+    local lineHeightToKill = difficulty * 2.5 + 6
     local panelLevel = 10
 
     if difficulty == 1 then
