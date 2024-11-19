@@ -180,7 +180,7 @@ level_to_flash                 = { 60, 54, 49, 45, 41, 37, 33, 30, 27, 25, 23}
 --  This makes timings accurate with Tetris Attack / Panel de Pon SFC.)
 level_to_face                  = { 20, 19, 17, 15, 14, 13, 12, 11, 10,  9,  8}
 -- How long panels take to pop after finishing their "face" frame, in frames.
-level_to_pop                   = { 10,  9,  9,  9,  8,  8,  8,  7,  7,  7,  7}
+level_to_pop                   = { 10, 10,  9,  9,  8,  8,  8,  7,  7,  7,  7}
 -- How long the stack stops when you clear combos, in frames.
 level_to_combo_constant        = {141,129,117,106, 97, 88, 80, 73, 66, 60, 55}
 level_to_combo_coefficient     = {  7,  6,  5,  5,  4,  4,  3,  3,  3,  3,  2}
