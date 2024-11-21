@@ -415,7 +415,7 @@ function GarbageMultiplier(clock)
   if clock < initial_period then
     return 1
   else
-    return math.min(5, math.ceil((clock - initial_period) / 3600) + 1)
+    return math.min(8, math.ceil((clock - initial_period) / 3600))
   end
 end
 
@@ -434,7 +434,7 @@ function Stack:pushGarbage(coordinate, isChain, comboSize, metalCount)
   local combo_pieces_classic = combo_garbage_classic[comboSize]
   local actual_pieces = 1
 
-  if (self.game_stopwatch >= 3600) and (self.chain_counter and self.chain_counter < 3) then
+  if (self.game_stopwatch >= 7200) and (self.chain_counter and self.chain_counter < 3) then
     -- Modern Combo Garbage
     for i = 1, #combo_pieces * GarbageMultiplier(self.game_stopwatch) do
       if self.garbageTarget and self.telegraph then
