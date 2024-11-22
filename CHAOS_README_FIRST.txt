@@ -1,17 +1,19 @@
 Latest updates
 ==========
 + Ported everything to the May 2024 version of stable.
-+ Removed the Chaos Mode levels... for now.
++ Implemented an overtime mechanic, which I will call 'Chaos Mode'.
+  - Overtime starts at 2 minutes on the normal levels, but it starts right away on the Chaos Mode levels.
++ Re-added the Chaos Mode levels for now.
 + Removed all Nintendo stuff.
 
-VERY IMPORTANT: This build is based on an older version of stable (May 2024)).
+VERY IMPORTANT: This build is based on an older version of stable (May 2024).
 
 The laundry list of changes off the top of my head:
 
 Client-Side Changes
 ==========
 + Levels on both classic and modern levels have been rebalanced so they scale in difficulty properly. Level 8 on this build is the closest to level 10 on the normal build.
-+ Four new levels have been added, called the Chaos Modes. The Chaos Modes basically replace EX Mode; matches on these levels will be much shorter compared to the normal levels [temporarily removed].
++ Four new levels have been added, called the Chaos Modes. The Chaos Modes basically replace EX Mode; matches on these levels will be much shorter compared to the normal levels.
 + Garbage margin has been implemented in versus modes. The more garbage a player has built up in their queue, the less stop and shake time they get.
 + 'Speed margin' has been implemented into Endless; higher rise speed equates to less stop time.
 + The garbage system has been changed.
@@ -19,6 +21,7 @@ Client-Side Changes
 + (mostly done) There are two scoring systems in place; one for Endless, and another for everything else.
 + Challenge Mode has been revamped.
 + [DONE] Changed the analytics that are displayed. These are the analytics that are displayed from top to bottom:
+
   Endless and Time Attack
   - Panels cleared
   - Efficiency
@@ -49,8 +52,8 @@ Other things I would like to implement:
 + Allow colorless panels to be cleared by regular panels. Colorless panels being cleared will turn into air, but colorless panels cannot clear garbage.
 + 1p vs garbage mode.
 + All-Clear bonus.
-  * I will need to figure out how many points an all-clear should give.
-  * Maybe make all-clear an alternate win condition in Challenge Mode and 2p vs...?
+  * I will need to figure out how many points an all-clear should give, and what garbage it should send.
+  * Maybe make all-clear an alternate win condition in Challenge Mode and 2p vs...? [NOPE.]
 + Timed sets for ranked play [scrapping this for now].
   * Win conditions: One player reaches 10 wins, or one player has a higher win count after time has expired.
   * The set will end in a draw if win counts are tied when time expires.
