@@ -1354,7 +1354,7 @@ function Stack.shouldDropGarbage(self)
       return true
     elseif from_chain then
       -- drop chain garbage higher than 1 row immediately
-      if self.game_stopwatch >= 7200 then
+      if self.game_stopwatch >= 7200 or self.level > 11 then
         return next_garbage_block_height >= 1
       else
         return next_garbage_block_height > 1
@@ -1364,7 +1364,7 @@ function Stack.shouldDropGarbage(self)
       -- that is to circumvent the garbage queue not allowing to send multiple chains simultaneously
       -- and because of that hack, we need to do another hack here and allow n-height combo garbage
       -- but only if trainingmodesettings have been set on the GAME global
-      if self.game_stopwatch >= 7200 then
+      if self.game_stopwatch >= 7200 or self.level > 11 then
         return next_garbage_block_height >= 1
       else
         return next_garbage_block_height > 1

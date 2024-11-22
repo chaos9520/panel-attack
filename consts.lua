@@ -162,37 +162,37 @@ panels_to_next_speed =
   45, 45, 45, 45, 45, 45, 45, 45, math.huge}
 
 -- What speed level you start on.
-level_to_starting_speed        = { 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92}
+level_to_starting_speed        = { 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 96, 95, 94, 93}
 -- How long you can spend at the top of the screen without dying, in frames ("Health").
-level_to_hang_time             = {159,122, 94, 72, 56, 43, 33, 25, 20, 15, 12}
+level_to_hang_time             = {159,122, 94, 72, 56, 43, 33, 25, 20, 15, 12,  1,  1,  1,  1}
 -- How many colors of panels can spawn in VS mode, not including metal panels.
-level_to_ncolors_vs            = {  4,  5,  5,  6,  5,  6,  5,  6,  5,  6,  7}
+level_to_ncolors_vs            = {  4,  5,  5,  6,  5,  6,  5,  6,  5,  6,  7,  4,  5,  6,  7}
 -- How many colors of panels can spawn in time trial mode.
-level_to_ncolors_time          = {  4,  5,  5,  6,  5,  6,  5,  6,  5,  6,  7}
+level_to_ncolors_time          = {  4,  5,  5,  6,  5,  6,  5,  6,  5,  6,  7,  4,  5,  6,  7}
 -- How long panels will hover if not supported by anything, in frames.
-level_to_hover                 = {  9,  9,  8,  7,  6,  6,  5,  5,  4,  4,  4}
+level_to_hover                 = {  9,  9,  8,  7,  6,  6,  5,  5,  4,  4,  4,  4,  4,  4,  4}
 -- How long newly-transformed panels from garbage will hover before falling, in frames.
-level_to_garbage_panel_hover   = { 46, 35, 27, 21, 16, 12,  9,  7,  6,  4,  3}
+level_to_garbage_panel_hover   = { 46, 35, 27, 21, 16, 12,  9,  7,  6,  4,  3,  3,  3,  3,  3}
 -- How long panels flash for before popping, in frames.
-level_to_flash                 = { 60, 54, 49, 45, 41, 37, 33, 30, 27, 25, 23}
+level_to_flash                 = { 60, 54, 49, 45, 41, 37, 33, 30, 27, 25, 23, 23, 23, 23, 23}
 -- How long panels remain in their "face" frame before popping, in frames.
 -- (They actually stay in their face frame for five frames longer than the numbers in this table for some reason...
 --  This makes timings accurate with Tetris Attack / Panel de Pon SFC.)
-level_to_face                  = { 20, 19, 17, 15, 14, 13, 12, 11, 10,  9,  8}
+level_to_face                  = { 20, 19, 17, 15, 14, 13, 12, 11, 10,  9,  8,  8,  8,  8,  8}
 -- How long panels take to pop after finishing their "face" frame, in frames.
-level_to_pop                   = { 10, 10,  9,  9,  8,  8,  8,  7,  7,  7,  7}
+level_to_pop                   = { 10, 10,  9,  9,  8,  8,  8,  7,  7,  7,  7,  7,  7,  7,  7}
 -- How long the stack stops when you clear combos, in frames.
-level_to_combo_constant        = {141,129,117,106, 97, 88, 80, 73, 66, 60, 55}
-level_to_combo_coefficient     = {  7,  6,  5,  5,  4,  4,  3,  3,  3,  3,  2}
+level_to_combo_constant        = {141,129,117,106, 97, 88, 80, 73, 66, 60, 55, 37, 41, 45, 50}
+level_to_combo_coefficient     = {  7,  6,  5,  5,  4,  4,  3,  3,  3,  3,  2,  1,  2,  2,  2}
 -- How long the stack stops when you clear chains, in frames.
-level_to_chain_constant        = {170,154,140,128,116,105, 96, 87, 79, 72, 65}
-level_to_chain_coefficient     = {  8,  7,  7,  6,  5,  5,  4,  4,  3,  3,  3}
+level_to_chain_constant        = {170,154,140,128,116,105, 96, 87, 79, 72, 65, 45, 49, 54, 60}
+level_to_chain_coefficient     = {  8,  7,  7,  6,  5,  5,  4,  4,  3,  3,  3,  1,  2,  2,  2}
 -- How many panels you have to pop to earn a metal panel in your next row.
-level_to_metal_panel_frequency = { 17, 23, 25, 30, 31, 35, 34, 40, 39, 42, 45}
+level_to_metal_panel_frequency = { 17, 23, 25, 30, 31, 35, 34, 40, 39, 42, 45, 21, 22, 24, 25}
 -- How many panels you can have at most in your metal panel queue.
-level_to_metal_panel_cap       = { 14, 13, 12, 11, 10,  9,  8,  8,  7,  6,  6}
+level_to_metal_panel_cap       = { 14, 13, 12, 11, 10,  9,  8,  8,  7,  6,  6,  6,  6,  6,  6}
 -- How the amount of garbage pieces in your queue affect stop and shake time.
-level_to_garbage_margin        = { 12, 17, 19, 22, 23, 26, 25, 30, 29, 30, 34}
+level_to_garbage_margin        = { 12, 17, 19, 22, 23, 26, 25, 30, 29, 30, 34, 26, 28, 30, 31}
 
 -- Stage clear seems to use a variant of vs mode's speed system,
 -- except that the amount of time between increases is not constant.

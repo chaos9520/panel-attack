@@ -410,8 +410,13 @@ function Stack:getGarbagePanelRow()
   return garbagePanelRow
 end
 
-function GarbageMultiplier(clock)
-  local initial_period = 7200
+function GarbageMultiplier(clock, level)
+  local initial_period
+  if level > 11 then
+    initial_period = 0
+  else
+    initial_period = 7200
+  end
   if clock < initial_period then
     return 1
   else
@@ -434,9 +439,9 @@ function Stack:pushGarbage(coordinate, isChain, comboSize, metalCount)
   local combo_pieces_classic = combo_garbage_classic[comboSize]
   local actual_pieces = 1
 
-  if (self.game_stopwatch >= 7200) and (self.chain_counter and self.chain_counter < 3) then
+  if (self.level > 11) or ((self.game_stopwatch >= 7200) and (self.chain_counter and self.chain_counter < 3)) then
     -- Modern Combo Garbage
-    for i = 1, #combo_pieces * GarbageMultiplier(self.game_stopwatch) do
+    for i = 1, #combo_pieces * GarbageMultiplier(self.game_stopwatch, self.level) do
       if self.garbageTarget and self.telegraph then
         -- Give out combo garbage based on the lookup table, even if we already made shock garbage,
         self.telegraph:push({width = comboSize % 4 + 3, height = math.ceil((comboSize - 3) / 4), isMetal = false, isChain = false}, coordinate.column, coordinate.row,
@@ -447,7 +452,7 @@ function Stack:pushGarbage(coordinate, isChain, comboSize, metalCount)
     end
   else
     -- Classic Combo Garbage
-    for i = 1, #combo_pieces_classic * GarbageMultiplier(self.game_stopwatch) do
+    for i = 1, #combo_pieces_classic * GarbageMultiplier(self.game_stopwatch, self.level) do
       if self.garbageTarget and self.telegraph then
         -- Give out combo garbage based on the lookup table, even if we already made shock garbage,
         self.telegraph:push({width = comboSize % 4 + 3, height = 1, isMetal = false, isChain = false}, coordinate.column, coordinate.row,
