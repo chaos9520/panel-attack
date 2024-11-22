@@ -439,7 +439,7 @@ function Stack:pushGarbage(coordinate, isChain, comboSize, metalCount)
   local combo_pieces_classic = combo_garbage_classic[comboSize]
   local actual_pieces = 1
 
-  if (self.level > 11) or ((self.game_stopwatch >= 7200) and (self.chain_counter and self.chain_counter < 3)) then
+  if ((self.level > 11) or (self.game_stopwatch >= 7200)) and (self.chain_counter and self.chain_counter < 3) then
     -- Modern Combo Garbage
     for i = 1, #combo_pieces * GarbageMultiplier(self.game_stopwatch, self.level) do
       if self.garbageTarget and self.telegraph then
