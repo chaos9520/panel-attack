@@ -420,7 +420,7 @@ function GarbageMultiplier(clock, level)
   if clock < initial_period then
     return 1
   else
-    return math.min(4, math.ceil((clock - initial_period) / 3600))
+    return math.min(12, math.ceil((clock - initial_period) / 3600))
   end
 end
 
