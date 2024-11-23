@@ -161,6 +161,24 @@ panels_to_next_speed =
   45, 45, 45, 45, 45, 45, 45, 45, 45, 45,
   45, 45, 45, 45, 45, 45, 45, 45, math.huge}
 
+  LEVEL_DESCRIPTION = {
+    "Newbie (4 colors)",
+    "Beginner (5 colors)",
+    "Novice (5 colors)",
+    "Novice+ (6 colors)",
+    "Intermediate (5 colors)",
+    "Intermediate+ (6 colors)",
+    "Advanced (5 colors)",
+    "Advanced+ (6 colors)",
+    "Expert (5 colors)",
+    "Expert+ (6 colors)",
+    "Master (7 colors)",
+    "Chaos Mode I (4 colors)",
+    "Chaos Mode II (5 colors)",
+    "Chaos Mode III (6 colors)",
+    "Chaos Mode IV (7 colors)",
+    }
+
 -- What speed level you start on.
 level_to_starting_speed        = { 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 96, 95, 94, 93}
 -- How long you can spend at the top of the screen without dying, in frames ("Health").
