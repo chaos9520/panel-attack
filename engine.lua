@@ -1569,7 +1569,6 @@ function Stack.simulate(self)
         SFX_Fanfare_Play = self.chain_counter
       end
       self.analytic:register_chain(self.chain_counter)
-      self.analytic:register_garbage_sent(math.min(1, self.chain_counter))
       self.chain_counter = 0
 
       if self.telegraph then

@@ -474,6 +474,7 @@ function Stack:pushGarbage(coordinate, isChain, comboSize, metalCount)
                           self.clock)
     end
     self:recordChainHistory()
+    self.analytic:register_garbage_sent(actual_pieces)
   end
 end
 
