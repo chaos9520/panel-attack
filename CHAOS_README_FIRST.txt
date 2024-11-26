@@ -1,26 +1,23 @@
 Latest updates
 ==========
-+ Ported everything to the May 2024 version of stable.
-+ Implemented an overtime mechanic, which I will call 'Chaos Mode'.
-  - Overtime starts at 2 minutes on the normal levels, but it starts right away on the Chaos Mode levels.
-+ Re-added the Chaos Mode levels for now.
++ Another port... This time, it's to the refactored version of stable (November 2024 at the time of this message). Not everything has been ported over yet, but it's perfectly functionable in it's current form.
++ Implemented an overtime mechanic, which I will call 'Chaos Mode'. Overtime starts at 2 minutes.
++ Removed the Chaos Mode levels.
 + Removed all Nintendo stuff.
-
-VERY IMPORTANT: This build is based on an older version of stable (May 2024).
 
 The laundry list of changes off the top of my head:
 
 Client-Side Changes
 ==========
 + Levels on both classic and modern levels have been rebalanced so they scale in difficulty properly. Level 8 on this build is the closest to level 10 on the normal build.
-+ Four new levels have been added, called the Chaos Modes. The Chaos Modes basically replace EX Mode; matches on these levels will be much shorter compared to the normal levels.
 + Garbage margin has been implemented in versus modes. The more garbage a player has built up in their queue, the less stop and shake time they get.
 + 'Speed margin' has been implemented into Endless; higher rise speed equates to less stop time.
-+ The garbage system has been changed.
++ The garbage queue and combo garbage have been changed.
 + Rise speed formula has been changed.
-+ (mostly done) There are two scoring systems in place; one for Endless, and another for everything else.
++ [WIP] There are two scoring systems in place; one for Endless, and another for everything else.
+  - The plan here is to use one scoring system in Classic, and the other in Modern.
 + Challenge Mode has been revamped.
-+ [DONE] Changed the analytics that are displayed. These are the analytics that are displayed from top to bottom:
++ [WIP] Changed the analytics that are displayed. These are the analytics that are displayed from top to bottom:
 
   Endless and Time Attack
   - Panels cleared
@@ -39,10 +36,11 @@ Client-Side Changes
   - Garbage in Queue
   - Actions per Minute
 
-+ Shock panels can spawn from garbage.
+  (this needs to be ported over)
+
++ [WIP] Shock panels can spawn from garbage. (need to port this over)
 + 'Wiggling' is no longer a thing.
 + Stealth bridging is now a thing. hello modoki lol
-+ Shake animation intensity has been reduced to roughly 75% [removed, as this is adjustable via Options --> Graphics].
 + Health regeneration has been turned off.
 + 'MergeComboMetalQueue' in training files works differently now; the game will queue garbage in a more 'classic' fashion when this is set to 'true'.
 + GPM now calculates accurately.
@@ -52,17 +50,11 @@ Other things I would like to implement:
 + Allow colorless panels to be cleared by regular panels. Colorless panels being cleared will turn into air, but colorless panels cannot clear garbage.
 + 1p vs garbage mode.
 + All-Clear bonus.
-  * I will need to figure out how many points an all-clear should give, and what garbage it should send.
-  * Maybe make all-clear an alternate win condition in Challenge Mode and 2p vs...? [NOPE.]
-+ Timed sets for ranked play [scrapping this for now].
-  * Win conditions: One player reaches 10 wins, or one player has a higher win count after time has expired.
-  * The set will end in a draw if win counts are tied when time expires.
-  * Thinking of using a default time of 30 minutes.
-  * The clock will not run while players are at the select screen.
+  * I will need to figure out how many points an all-clear should give, and *maybe* what garbage it should send.
 
 These will take time to figure out how to implement them correctly.
 
-Server-Side Changes
+Server-Side Changes (not ported yet)
 ==========
 + My ranking system has been implented. This is a very recent addition, and it still needs to be tested. Level 8 is the 'gold standard' now, as it is the closest to 10 on the normal build.
 + Matches no longer have to be played on the same level for it to be ranked. My ranking system does take level differences into account.

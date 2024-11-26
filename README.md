@@ -2,7 +2,14 @@
 
 ## Development Setup
 
-Install the **32-bit** version of love (http://love2d.org/)
+### Installing love
+
+The current stable version uses love 11.5. Simply install from http://love2d.org/.  
+The beta version is the main development version and uses love 12.0.  
+Love 12 is still in development. You can find love 12.0 CI builds in the [love repository](https://github.com/love2d/love/actions/workflows/main.yml).
+Simply pick the newest workflow run, scroll down and select the artifact suitable for your machine.
+
+### Setting up the Panel Attack repository
 
 Clone a copy of the repository  
 ```
@@ -35,18 +42,24 @@ Please check the [contribution guidelines](CONTRIBUTING.md) for further informat
 
 ## Release schedule
 
-**Beginning of the month:**  
-beta feature development followed by a release
+### Main releases
+Panel Attack currently has 3 release streams that see updates at varying rates.
 
-**Mid month:**  
-Stop landing new features and only add bug fixes
+#### canary release
+Cutting edge build, automatically generated with every push to beta.  
+Available via https://github.com/panel-attack/panel-attack/releases.
 
-**After last tournament of the month:**  
-Merge beta into stable and release
-Hot fix stable as needed
+#### beta release
+beta release, a bit more tested than canary.
+Features are released on beta if there is some confidence that they're mostly working correctly.
 
 Release notes are posted in #panel-attack-updates on the discord when updates go out.
 
+#### stable release
+stable release, tested features that just work.  
+Stable releases take tournament dates into consideration so that any bugs that may still get caught don't interfere with them.  
+
+Release notes are posted in #panel-attack-updates on the discord when updates go out.
 
 ## Useful Lua Programming Tips
 
@@ -88,13 +101,3 @@ Secure copy the file to the server in correct folder on the server.
 Test that the game updates properly.  
 
 Post release notes in #panel-attack-updates on the discord.
-
-### Releasing a new full release with auto updating
-
-First make a love file, then copy that all into the auto updater folder and make that a love file.  
-Then copy the windows files in to your release folder.  
-Tack the autoupdater love file on the end of the exe.  
-Release a zip of the whole release directory.  
-
-More details and scripts to follow.
-

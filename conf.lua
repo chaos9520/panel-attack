@@ -1,5 +1,5 @@
-require("developer") -- Require developer here as this is basically the first thing to load in love 2D
-require("config") -- We need to setup the config save data so we can setup the window properties right from the start when love asks for them
+require("client.src.developer") -- Require developer here as this is basically the first thing to load in love 2D
+require("client.src.config") -- We need to setup the config save data so we can setup the window properties right from the start when love asks for them
 
 function love.conf(t)
   -- Set the identity before loading the config file
@@ -9,24 +9,19 @@ function love.conf(t)
 
   --t.identity = "" -- (already set above) -- The name of the save directory (string)
   t.appendidentity = false            -- Search files in source directory before save directory (boolean)
-  t.version = "11.3"                  -- The LÖVE version this game was made for (string)
+  t.version = "12.0"                  -- The LÖVE version this game was made for (string)
   t.console = false                   -- Attach a console (boolean, Windows only)
   t.accelerometerjoystick = false     -- Enable the accelerometer on iOS and Android by exposing it as a Joystick (boolean)
-  -- is loaded inside the auto updater
-  --- game and auto updater should always start inside the same storage for the config to read and write correctly
-  if UseAndroidExternalStorage ~= nil then
-    t.externalstorage = UseAndroidExternalStorage    -- True to save files (and read from the save directory) in external storage on Android (boolean) 
-  else
-    -- game was started without auto_updater or an outdated auto_updater that isn't external_storage ready
-    t.externalstorage = false
-  end
+  t.externalstorage = true
   t.gammacorrect = false              -- Enable gamma-correct rendering, when supported by the system (boolean)
+  t.highdpi = true                  -- Enable high-dpi mode for the window on a Retina display (boolean)
+
 
   t.audio.mic = false                 -- Request and use microphone capabilities in Android (boolean)
   t.audio.mixwithsystem = false       -- Keep background music playing when opening LOVE (boolean, iOS and Android only)
 
   t.window.title = "Panel Attack"          -- The window title (string)
-  t.window.icon = nil                      -- Filepath to an image to use as the window's icon (string)
+  t.window.icon = "client/assets/panels/__default/panel11.png"                      -- Filepath to an image to use as the window's icon (string)
   t.window.width = config.windowWidth            -- The window width (number)
   t.window.height = config.windowHeight          -- The window height (number)
   t.window.borderless = config.borderless  -- Remove all border visuals from the window (boolean)
@@ -39,8 +34,7 @@ function love.conf(t)
   t.window.msaa = 0                        -- The number of samples to use with multi-sampled antialiasing (number)
   t.window.depth = nil                     -- The number of bits per sample in the depth buffer
   t.window.stencil = nil                   -- The number of bits per sample in the stencil buffer
-  t.window.display = config.display        -- Index of the monitor to show the window in (number)
-  t.window.highdpi = true                  -- Enable high-dpi mode for the window on a Retina display (boolean)
+  t.window.displayindex = config.display        -- Index of the monitor to show the window in (number)
   t.window.usedpiscale = false             -- Enable automatic DPI scaling when highdpi is set to true as well (boolean)
   t.window.x = config.windowX              -- The x-coordinate of the window's position in the specified display (number)
   t.window.y = config.windowY              -- The y-coordinate of the window's position in the specified display (number)

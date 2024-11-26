@@ -1,91 +1,59 @@
-require("class")
-socket = require("socket")
-GAME = require("Game")
-require("match")
-local RunTimeGraph = require("RunTimeGraph")
-require("BattleRoom")
-require("util")
-local tableUtils = require("tableUtils")
-local consts = require("consts")
-require("FileUtil")
-require("queue")
-require("globals")
-require("character_loader") -- after globals!
-local CustomRun = require("CustomRun")
-require("stage") -- after globals!
-require("save")
-require("engine.GarbageQueue")
-require("engine.telegraph")
-require("engine")
-require("engine.checkMatches")
-require("AttackEngine")
-require("localization")
-require("graphics")
-GAME.input = require("input")
-require("replay")
-require("network")
-require("Puzzle")
-require("PuzzleSet")
-require("puzzles")
-require("mainloop")
-require("sound")
-require("timezones")
-require("gen_panels")
-require("panels")
-require("Theme")
-local utf8 = require("utf8Additions")
-require("click_menu")
-require("computerPlayers.computerPlayer")
-require("rich_presence.RichPresence")
+local logger = require("common.lib.logger")
+require("common.lib.mathExtensions")
+local utf8 = require("common.lib.utf8Additions")
+local inputManager = require("common.lib.inputManager")
+require("client.src.globals")
+local touchHandler = require("client.src.ui.touchHandler")
+local inputFieldManager = require("client.src.ui.inputFieldManager")
+local ClientMessages = require("common.network.ClientProtocol")
+local RunTimeGraph = require("client.src.RunTimeGraph")
+local CustomRun = require("client.src.CustomRun")
+local GraphicsUtil = require("client.src.graphics.graphics_util")
+local prof = require("common.lib.jprof.jprof")
+require("common.lib.util")
 
--- We override love.run with a function that refers to `pa_runInternal` for its gameloop function
+local Game = require("client.src.Game")
+-- move to load once global dependencies have been resolved
+GAME = Game()
+
+-- We override love.run with a function that refers to `runInternal` for its gameloop function
 -- so by overwriting that, the new runInternal will get used on the next iteration
-love.pa_runInternal = CustomRun.innerRun
-if GAME_UPDATER == nil then
-  -- We don't have an autoupdater, so we need to override run.
-  -- In the autoupdater case run will already have been overridden and be running
-  love.run = CustomRun.run
+love.runInternal = CustomRun.innerRun
+
+function love.run()
+  return CustomRun.run()
 end
-
-local crashTrace = nil -- set to the trace of your thread before throwing an error if you use a coroutine
-
-if PROFILING_ENABLED then
-  GAME.profiler = require("profiler")
-end
-
-local logger = require("logger")
-GAME.scores = require("scores")
-GAME.rich_presence = RichPresence()
-
-
-local last_x = 0
-local last_y = 0
-local input_delta = 0.0
-local pointer_hidden = false
-local mainloop = nil
 
 -- Called at the beginning to load the game
-function love.load()
+-- Either called directly or from auto_updater
+function love.load(args)
+  love.keyboard.setTextInput(false)
 
-  if PROFILING_ENABLED then
-    GAME.profiler:start()
+  -- there is a bug on windows that causes the game to start with a size equal to the desktop causing the window handle to be offscreen
+  -- check for that and restore the window if that's the case:
+  local x, y, displayIndex = love.window.getPosition()
+  local desktopWidth, desktopHeight = love.window.getDesktopDimensions(displayIndex)
+  local w, windowHeight, flags = love.window.getMode()
+
+  if not flags.fullscreen and not flags.borderless and love.system.getOS() ~= "Android" then
+    if y == 0 and windowHeight >= desktopHeight then
+      if love.window.isMaximized() then
+        love.window.restore()
+      end
+      local offset = math.ceil(desktopHeight / 32)
+      love.window.updateMode(desktopWidth, desktopHeight - offset, flags)
+      love.window.setPosition(x, offset, displayIndex)
+    end
+
+    if config.maximizeOnStartup and not love.window.isMaximized() then
+      love.window.maximize()
+    end
   end
-  
-  love.graphics.setDefaultFilter("linear", "linear")
-  if config.maximizeOnStartup and not love.window.isMaximized() then
-    love.window.maximize()
-  end
+
   local newPixelWidth, newPixelHeight = love.graphics.getWidth(), love.graphics.getHeight()
   GAME:updateCanvasPositionAndScale(newPixelWidth, newPixelHeight)
-  math.randomseed(os.time())
-  for i = 1, 4 do
-    math.random()
-  end
-  read_key_file()
-  GAME.rich_presence:initialize("902897593049301004")
-  mainloop = coroutine.create(fmainloop)
 
-  GAME.globalCanvas = love.graphics.newCanvas(canvas_width, canvas_height, {dpiscale=GAME:newCanvasSnappedScale()})
+  GAME:load()
 end
 
 function love.focus(f)
@@ -95,7 +63,6 @@ end
 -- Called every few fractions of a second to update the game
 -- dt is the amount of time in seconds that has passed.
 function love.update(dt)
-
   if config.show_fps and config.debug_mode then
     if CustomRun.runTimeGraph == nil then
       CustomRun.runTimeGraph = RunTimeGraph()
@@ -104,144 +71,44 @@ function love.update(dt)
     CustomRun.runTimeGraph = nil
   end
 
-  if love.mouse.getX() == last_x and love.mouse.getY() == last_y then
-    if not pointer_hidden then
-      if input_delta > mouse_pointer_timeout then
-        pointer_hidden = true
-        love.mouse.setVisible(false)
-      else
-        input_delta = input_delta + dt
-      end
-    end
-  else
-    last_x = love.mouse.getX()
-    last_y = love.mouse.getY()
-    input_delta = 0.0
-    if pointer_hidden then
-      pointer_hidden = false
-      love.mouse.setVisible(true)
-    end
-  end
-
-  leftover_time = leftover_time + dt
+  inputManager:update(dt)
+  inputFieldManager.update()
+  touchHandler:update(dt)
 
   GAME:update(dt)
-  
-  if GAME.backgroundImage then
-    GAME.backgroundImage:update(dt)
-  end
-
-  local newPixelWidth, newPixelHeight = love.graphics.getWidth(), love.graphics.getHeight()
-  if GAME.previousWindowWidth ~= newPixelWidth or GAME.previousWindowHeight ~= newPixelHeight then
-    GAME:updateCanvasPositionAndScale(newPixelWidth, newPixelHeight)
-    if GAME.match then
-      GAME.needsAssetReload = true
-    else
-      GAME:refreshCanvasAndImagesForNewScale()
-    end
-    GAME.showGameScale = true
-  end
-
-  local status, errorString = coroutine.resume(mainloop)
-  if not status then
-    crashTrace = debug.traceback(mainloop)
-    error(errorString)
-  end
-  if server_queue and server_queue:size() > 0 then
-    logger.trace("Queue Size: " .. server_queue:size() .. " Data:" .. server_queue:to_short_string())
-  end
-  this_frame_messages = {}
-
-  update_music()
-  GAME.rich_presence:runCallbacks()
 end
 
 -- Called whenever the game needs to draw.
 function love.draw()
-  if GAME then
-    GAME.isDrawing = true
-  end
-
-  -- Clear the screen
-  love.graphics.setCanvas(GAME.globalCanvas)
-  love.graphics.setBackgroundColor(unpack(global_background_color))
-  love.graphics.clear()
-
-  -- draw background and its overlay
-  if GAME.backgroundImage then
-    GAME.backgroundImage:draw()
-  end
-  if GAME.background_overlay then
-    local scale = canvas_width / math.max(GAME.background_overlay:getWidth(), GAME.background_overlay:getHeight()) -- keep image ratio
-    menu_drawf(GAME.background_overlay, canvas_width / 2, canvas_height / 2, "center", "center", 0, scale, scale)
-  end
-
-  for i = gfx_q.first, gfx_q.last do
-    gfx_q[i][1](unpack(gfx_q[i][2]))
-  end
-  gfx_q:clear()
-
-  if GAME.foreground_overlay then
-    local scale = canvas_width / math.max(GAME.foreground_overlay:getWidth(), GAME.foreground_overlay:getHeight()) -- keep image ratio
-    menu_drawf(GAME.foreground_overlay, canvas_width / 2, canvas_height / 2, "center", "center", 0, scale, scale)
-  end
-  
-  -- Draw the FPS if enabled
-  if config ~= nil and config.show_fps then
-    if not CustomRun.runTimeGraph then
-      gprintf("FPS: " .. love.timer.getFPS(), 1, 1)
-    end
-  end
-
-  if STONER_MODE then 
-    gprintf("Lag Mode On, S:" .. GAME.sendNetworkQueue:length() .. " R:" .. GAME.receiveNetworkQueue:length(), 1, 1 + (11 * 4))
-  end
-
-  love.graphics.setCanvas() -- render everything thats been added
-  love.graphics.clear(love.graphics.getBackgroundColor()) -- clear in preperation for the next render
-    
-  love.graphics.setBlendMode("alpha", "premultiplied")
-  love.graphics.draw(GAME.globalCanvas, GAME.canvasX, GAME.canvasY, 0, GAME.canvasXScale, GAME.canvasYScale)
-  love.graphics.setBlendMode("alpha", "alphamultiply")
-
-  if GAME.showGameScale or config.debug_mode then
-    local scaleString = "Scale: " .. GAME.canvasXScale .. " (" .. canvas_width * GAME.canvasXScale .. " x " .. canvas_height * GAME.canvasYScale .. ")"
-    local newPixelWidth = love.graphics.getWidth()
-    local font = get_global_font()
-    local fontAscent = "Font Ascent: " .. font:getAscent()
-    local fontDescent = "Font Descent: " .. font:getDescent()
-    local fontBaseLine = "Font Baseline: " .. font:getBaseline()
-    local fontHeight = "Font Height: " .. font:getHeight()
-    local fontLineHeight = "Font Line Height: " .. font:getLineHeight()
-
-    if canvas_width * GAME.canvasXScale > newPixelWidth then
-      scaleString = scaleString .. " Clipped "
-    end
-    local bigFont = get_global_font_with_size(30)
-    love.graphics.printf(scaleString, bigFont, 5, 5, 2000, "left")
-    love.graphics.printf(fontAscent, bigFont, 5, 35, 2000, "left")
-    love.graphics.printf(fontDescent, bigFont, 5, 65, 2000, "left")
-    love.graphics.printf(fontBaseLine, bigFont, 5, 95, 2000, "left")
-    love.graphics.printf(fontHeight, bigFont, 5, 125, 2000, "left")
-    love.graphics.printf(fontLineHeight, bigFont, 5, 155, 2000, "left")
-
-  end
-
-  if DEBUG_ENABLED and love.system.getOS() == "Android" then
-    local saveDir = love.filesystem.getSaveDirectory()
-    love.graphics.printf(saveDir, get_global_font_with_size(30), 5, 50, 2000, "left")
-  end
-
-  if GAME then
-    GAME.isDrawing = false
-  end
+  GAME:draw()
 end
 
 -- Handle a mouse or touch press
-function love.mousepressed(x, y)
-  for menu_name, menu in pairs(CLICK_MENUS) do
-    menu:click_or_tap(GAME:transform_coordinates(x, y))
+function love.mousepressed(x, y, button)
+  touchHandler:touch(x, y)
+  inputManager:mousePressed(x, y, button)
+end
+
+function love.mousereleased(x, y, button)
+  if button == 1 then
+    touchHandler:release(x, y)
+    inputManager:mouseReleased(x, y, button)
   end
+end
+
+function love.mousemoved( x, y, dx, dy, istouch )
+  if love.mouse.isDown(1) then
+    touchHandler:drag(x, y)
+  end
+  inputManager:mouseMoved(x, y)
+end
+
+function love.joystickpressed(joystick, button)
+  inputManager:joystickPressed(joystick, button)
+end
+
+function love.joystickreleased(joystick, button)
+  inputManager:joystickReleased(joystick, button)
 end
 
 -- Handle a touch press
@@ -251,7 +118,42 @@ end
 -- click_or_tap(_x, _y, {id = id, x = _x, y = _y, dx = dx, dy = dy, pressure = pressure})
 -- end
 
+-- quit handling
+function love.quit()
+  if PROF_CAPTURE then
+    prof.write("prof.mpack")
+  end
+  if GAME.netClient and GAME.netClient:isConnected() then
+    GAME.netClient:logout()
+  end
+  love.audio.stop()
+  config.fullscreen = love.window.getFullscreen()
+  local x, y, displayIndex = love.window.getPosition()
+  config.displayIndex = displayIndex
+  if config.fullscreen then
+    _, _, config.display = love.window.getPosition()
+    config.fullscreen = true
+    -- don't save the other values so the settings from previous windowed mode usage are preserved
+  else
+    config.windowX = math.max(x, 0)
+    config.windowY = math.max(y, 0)
+    if config.windowY == 0 then
+      --don't let 'y' be zero, or the title bar will not be visible on next launch.
+      config.windowY = 30
+    end
+    config.windowWidth, config.windowHeight, _ = love.window.getMode()
+    config.maximizeOnStartup = love.window.isMaximized()
+  end
+
+  write_conf_file()
+  pcall(love.filesystem.write, "debug.log", table.concat(logger.messages, "\n"))
+end
+
 function love.errorhandler(msg)
+  if lldebugger then
+    pcall(love.filesystem.write, "debug.log", table.concat(logger.messages, "\n"))
+    error(msg, 2)
+  end
 
   if not love.window or not love.graphics or not love.event then
     return
@@ -264,6 +166,17 @@ function love.errorhandler(msg)
     end
   end
 
+  -- if we crashed during a match that is likely cause of the issue
+  -- we want it logged in a digestable form
+  if GAME.battleRoom and GAME.battleRoom.match then
+    pcall(function()
+      local match = GAME.battleRoom.match
+      match.aborted = true
+      Replay.finalizeReplay(match, match.replay)
+      logger.info("Replay of match during crash:\n" .. json.encode(match.replay))
+    end)
+  end
+
   msg = tostring(msg)
   local sanitizedMessageLines = {}
   for char in msg:gmatch(utf8.charpattern) do
@@ -271,7 +184,7 @@ function love.errorhandler(msg)
   end
   local sanitizedMessage = table.concat(sanitizedMessageLines)
 
-  local trace = crashTrace or debug.traceback("", 4)
+  local trace = GAME.crashTrace or debug.traceback("", 3)
   local traceLines = {}
   for l in trace:gmatch("(.-)\n") do
     if not l:match("boot.lua") and not l:match("stack traceback:") then
@@ -279,17 +192,31 @@ function love.errorhandler(msg)
     end
   end
   local sanitizedTrace = table.concat(traceLines, "\n")
-  
-  local errorData = Game.errorData(sanitizedMessage, sanitizedTrace)
-  local detailedErrorLogString = Game.detailedErrorLogString(errorData)
-  errorData.detailedErrorLogString = detailedErrorLogString
-  if GAME_UPDATER_GAME_VERSION then
-    send_error_report(errorData)
+
+  local function getGameErrorData(sanitizedMessage, sanitizedTrace)
+    local errorData = Game.errorData(sanitizedMessage, sanitizedTrace)
+    local detailedErrorLogString = Game.detailedErrorLogString(errorData)
+    errorData.detailedErrorLogString = detailedErrorLogString
+    -- if GAME_UPDATER_GAME_VERSION then
+    --   GAME.netClient:sendErrorReport(errorData, consts.SERVER_LOCATION, 59569)
+    -- end
+    return detailedErrorLogString
   end
 
+  local success, detailedErrorLogString = pcall(getGameErrorData, sanitizedMessage, sanitizedTrace)
   local errorLines = {}
-  table.insert(errorLines, "Error\n")
-  table.insert(errorLines, detailedErrorLogString)
+  table.insert(errorLines, "Error: Please share your crash.log with the developers to get help with this!\n")
+  if success then
+    table.insert(errorLines, detailedErrorLogString)
+    logger.info(detailedErrorLogString)
+  else
+    table.insert(errorLines, sanitizedMessage)
+    logger.info(sanitizedMessage)
+  end
+  if logger.messages then
+    logger.info("config during crash: " .. table_to_string(config))
+    pcall(love.filesystem.write, "crash.log", table.concat(logger.messages, "\n"))
+  end
   if #sanitizedMessage ~= #msg then
     table.insert(errorLines, "Invalid UTF-8 string in error message.")
   end
@@ -321,14 +248,20 @@ function love.errorhandler(msg)
   end
 
   love.graphics.reset()
-  love.graphics.setFont(get_font_delta(4))
+  local s, font = pcall(GraphicsUtil.getGlobalFontWithSize, GraphicsUtil.fontSize + 4)
+  if s then
+    love.graphics.setFont(font)
+  else
+    love.graphics.setNewFont(16)
+  end
   love.graphics.setColor(1, 1, 1)
   love.graphics.origin()
 
-  local scale = 1
   if GAME then
-    scale = GAME:newCanvasSnappedScale()
-    love.graphics.scale(scale, scale)
+    local success, canvasScale = pcall(GAME.newCanvasSnappedScale, GAME)
+    if success then
+      love.graphics.scale(canvasScale)
+    end
   end
 
   local function draw()
@@ -391,5 +324,29 @@ function love.errorhandler(msg)
       love.timer.sleep(0.1)
     end
   end
+end
 
+function love.resize(newWidth, newHeight)
+  if GAME then
+    GAME:handleResize(newWidth, newHeight)
+  end
+end
+
+function love.keypressed(key, scancode, rep)
+  logger.trace("key pressed: " .. key)
+  if scancode then
+    inputManager:keyPressed(key, scancode, rep)
+  end
+end
+
+function love.textinput(text)
+  inputFieldManager.textInput(text)
+end
+
+function love.keyreleased(key, unicode)
+  inputManager:keyReleased(key, unicode)
+end
+
+function love.joystickaxis(joystick, axisIndex, value)
+  inputManager:joystickaxis(joystick, axisIndex, value)
 end
