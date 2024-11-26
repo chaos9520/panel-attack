@@ -1,4 +1,4 @@
-local TIME_ATTACK_TIME = 60
+local TIME_ATTACK_TIME = 120
 
 local GameModes = {}
 
