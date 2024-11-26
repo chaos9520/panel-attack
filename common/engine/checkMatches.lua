@@ -502,7 +502,7 @@ function Stack:pushGarbage(coordinate, isChain, comboSize, metalCount)
   local combo_pieces = COMBO_GARBAGE[comboSize]
   local combo_pieces_classic = COMBO_GARBAGE_CLASSIC[comboSize]
 
-  if self.game_stopwatch >= 3600 and (self.chain_counter and self.chain_counter < 3) then
+  if (self.chain_counter and self.chain_counter < 3) then
     -- Chaos Combo Garbage
     for i = 1, #combo_pieces * GarbageMultiplier(self.game_stopwatch) do
       -- Give out combo garbage based on the lookup table, even if we already made shock garbage,
