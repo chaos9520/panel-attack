@@ -748,7 +748,7 @@ function Stack:drawAnalyticData()
   -- Garbage lines cleared
   if analytic.data.garbage_cleared > 0 then
     local lines_cleared = analytic.data.garbage_cleared / 6
-    analytic.lines_cleared = string.format("%0.1f", math.round(lines_cleared, 1))
+    analytic.lines_cleared = math.round(lines_cleared, 1)
   end
   icon_width, icon_height = characters[self.character].images.pop:getDimensions()
   GraphicsUtil.draw(characters[self.character].images.pop, x, y, 0, iconSize / icon_width, iconSize / icon_height)
