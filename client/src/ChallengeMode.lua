@@ -76,7 +76,7 @@ function ChallengeMode:createStages(difficulty)
     lineClearGPMBase = 9
     lineClearGPMIncrement = 1
     panelLevel = 4
-    lineHeightToKill = 12
+    lineHeightToKill = 12.5
   elseif difficulty == 5 then
     stageCount = 8
     framesToppedOutToLoseBase = 158
@@ -84,7 +84,7 @@ function ChallengeMode:createStages(difficulty)
     lineClearGPMBase = 10.5
     lineClearGPMIncrement = 0.78
     panelLevel = 5
-    lineHeightToKill = 14
+    lineHeightToKill = 15
   elseif difficulty == 6 then
     stageCount = 8
     framesToppedOutToLoseBase = 237
@@ -92,7 +92,7 @@ function ChallengeMode:createStages(difficulty)
     lineClearGPMBase = 12
     lineClearGPMIncrement = 0.85
     panelLevel = 6
-    lineHeightToKill = 16
+    lineHeightToKill = 18
   elseif difficulty == 7 then
     stageCount = 10
     framesToppedOutToLoseBase = 355
@@ -100,7 +100,7 @@ function ChallengeMode:createStages(difficulty)
     lineClearGPMBase = 13.5
     lineClearGPMIncrement = 0.72
     panelLevel = 7
-    lineHeightToKill = 18
+    lineHeightToKill = 21
   elseif difficulty == 8 then
     stageCount = 10
     framesToppedOutToLoseBase = 533
@@ -108,7 +108,7 @@ function ChallengeMode:createStages(difficulty)
     lineClearGPMBase = 16.5
     lineClearGPMIncrement = 0.77
     panelLevel = 8
-    lineHeightToKill = 20
+    lineHeightToKill = 24.5
   elseif difficulty == 9 then
     stageCount = 10
     framesToppedOutToLoseBase = 800
@@ -116,7 +116,7 @@ function ChallengeMode:createStages(difficulty)
     lineClearGPMBase = 18
     lineClearGPMIncrement = 0.72
     panelLevel = 9
-    lineHeightToKill = 22
+    lineHeightToKill = 28
   elseif difficulty == 10 then
     stageCount = 10
     framesToppedOutToLoseBase = 1200
@@ -124,7 +124,7 @@ function ChallengeMode:createStages(difficulty)
     lineClearGPMBase = 18
     lineClearGPMIncrement = 0.72
     panelLevel = 10
-    lineHeightToKill = 24
+    lineHeightToKill = 32
   elseif difficulty == 11 then
     stageCount = 6
     framesToppedOutToLoseBase = 1800
@@ -132,7 +132,7 @@ function ChallengeMode:createStages(difficulty)
     lineClearGPMBase = 19.5
     lineClearGPMIncrement = 0.72
     panelLevel = 11
-    lineHeightToKill = 26
+    lineHeightToKill = 36
   else
     error("Invalid challenge mode difficulty level of " .. difficulty)
   end
