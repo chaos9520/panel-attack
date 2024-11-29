@@ -18,7 +18,13 @@ local function create_blank_data()
     reached_chains = {},
     -- sparse dictionary with a count of each combo reached, 1 to 3 being meaningless
     used_combos = {},
-    shockGarbageCount = 0
+    shockGarbageCount = 0,
+    -- the amound of wasted panels, used to determine efficiency
+    wasted_panels = 0,
+    -- the amount of garbage pieces sent
+    garbage_pieces_sent = 0,
+    -- the amount of garbage panels cleared
+    garbage_cleared = 0
   }
 end
 
@@ -32,7 +38,12 @@ AnalyticsInstance =
     -- temporary
     self.lastGPM = 0
     self.lastAPM = 0
+    self.efficiency = 0
+    self.lastPPM = 0
     self.garbage_in_queue = 0
+    self.lastGCPM = 0
+    self.lines_cleared = 0
+    
   end
 )
 
@@ -51,6 +62,9 @@ local function analytic_clear(analytic)
   analytic.reached_chains = {}
   analytic.used_combos = {}
   analytic.shockGarbageCount = 0
+  analytic.wasted_panels = 0
+  analytic.garbage_pieces_sent = 0
+  analytic.garbage_cleared = 0
 end
 
 local amount_of_garbages_lines_per_combo = {0,0,0,0.5,0.7,0.8,1,1,1.3,1.7,
@@ -169,7 +183,10 @@ local function output_pretty_analytics()
   for i, analytic in pairs(analytics_filters) do
     text = text .. titles[i]
     text = text .. "Destroyed " .. analytic.destroyed_panels .. " panels.\n"
+    text = text .. "Wasted" .. analytic.wasted_panels .. " panels.\n"
+    text = text .. "Cleared " .. analytic.garbage_cleared .. " garbage panels.\n"
     text = text .. "Sent " .. analytic.sent_garbage_lines .. " lines of garbage.\n"
+    text = text .. "Sent " .. analytic.garbage_pieces_sent .. " pieces of garbage.\n"
     text = text .. "Moved " .. analytic.move_count .. " times.\n"
     text = text .. "Swapped " .. analytic.swap_count .. " times.\n"
     text = text .. "Performed combos:\n"
@@ -237,6 +254,13 @@ function AnalyticsInstance.register_destroyed_panels(self, amount)
   end
 end
 
+function AnalyticsInstance.register_wasted_panels(self, amount)
+  local analytics_filters = self:data_update_list()
+  for _, analytic in pairs(analytics_filters) do
+    analytic.wasted_panels = analytic.wasted_panels + amount
+  end
+end
+
 function AnalyticsInstance.register_chain(self, size)
   local analytics_filters = self:data_update_list()
   for _, analytic in pairs(analytics_filters) do
@@ -263,6 +287,20 @@ function AnalyticsInstance.register_move(self)
   end
 end
 
+function AnalyticsInstance.register_pieces_sent(self, amount)
+  local analytics_filters = self:data_update_list()
+  for _, analytic in pairs(analytics_filters) do
+    analytic.garbage_pieces_sent = analytic.garbage_pieces_sent + amount
+  end
+end
+
+function AnalyticsInstance.register_garbage_cleared(self)
+  local analytics_filters = self:data_update_list()
+  for _, analytic in pairs(analytics_filters) do
+    analytic.garbage_cleared = analytic.garbage_cleared + 1
+  end
+end
+
 function AnalyticsInstance:registerShock()
   -- we don't track shock garbage sent in all-time analytics - for now
   self.data.shockGarbageCount = self.data.shockGarbageCount
@@ -285,6 +323,16 @@ end
 function AnalyticsInstance:getRoundedGPM(clock)
   local garbagePerMinute = self.data.sent_garbage_lines / (clock / 60 / 60)
   return string.format("%0.1f", math.round(garbagePerMinute, 1))
+end
+
+function AnalyticsInstance:getRoundedPPM(clock)
+  local PiecesPerMinute = self.data.garbage_pieces_sent / (clock / 60 / 60)
+  return string.format("%0.1f", math.round(PiecesPerMinute, 1))
+end
+
+function AnalyticsInstance:getRoundedGCPM(clock)
+  local PiecesPerMinute = (self.data.garbage_cleared / 6) / (clock / 60 / 60)
+  return string.format("%0.1f", math.round(PiecesPerMinute, 1))
 end
 
 return analytics

@@ -161,6 +161,9 @@ function Stack:checkMatches()
       self:pushGarbage(attackGfxOrigin, isChainLink, comboSize, metalCount)
       self:queueAttackSoundEffect(isChainLink, self.chain_counter, comboSize, metalCount)
     end
+    if comboSize == 3 and (not isChainLink) and metalCount == 0 and #garbagePanels == 0 then
+      self.analytic:register_wasted_panels(comboSize)
+    end
 
     self.analytic:register_destroyed_panels(comboSize)
     self:updateScoreWithBonus(comboSize)
@@ -436,6 +439,7 @@ function Stack:convertGarbagePanels(isChain)
             panel_color = PanelGenerator.PANEL_COLOR_TO_NUMBER[panel_char]
           end
         panel.color = panel_color
+        self.analytic:register_garbage_cleared()
         if isChain then
           panel.chaining = true
         end
@@ -487,6 +491,7 @@ end
 function Stack:pushGarbage(coordinate, isChain, comboSize, metalCount)
   logger.debug("P" .. self.which .. "@" .. self.clock .. ": Pushing garbage for " .. (isChain and "chain" or "combo") .. " with " .. comboSize .. " panels")
   for i = 3, metalCount do
+    local metal_pieces = 1
     self.outgoingGarbage:push({
       width = 6,
       height = 1,
@@ -497,10 +502,12 @@ function Stack:pushGarbage(coordinate, isChain, comboSize, metalCount)
       colEarned = coordinate.column
     })
     self.analytic:registerShock()
+    self.analytic:register_pieces_sent(metal_pieces)
   end
 
   local combo_pieces = COMBO_GARBAGE[comboSize]
   local combo_pieces_classic = COMBO_GARBAGE_CLASSIC[comboSize]
+  local pieces_sent = 1
 
   if (self.chain_counter and self.chain_counter < 3) then
     -- Chaos Combo Garbage
@@ -515,6 +522,7 @@ function Stack:pushGarbage(coordinate, isChain, comboSize, metalCount)
         rowEarned = coordinate.row,
         colEarned = coordinate.column
       })
+      self.analytic:register_pieces_sent(pieces_sent)
     end
   else
     -- Classic Combo Garbage
@@ -529,6 +537,7 @@ function Stack:pushGarbage(coordinate, isChain, comboSize, metalCount)
         rowEarned = coordinate.row,
         colEarned = coordinate.column
       })
+      self.analytic:register_pieces_sent(pieces_sent)
     end
   end
 
