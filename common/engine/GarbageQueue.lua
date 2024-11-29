@@ -23,6 +23,18 @@ end
 -- specifies order in the garbage queue if two elements are both combos
 -- higher priority garbage is at the end so we can pop it without having to shift indexes
 local function orderComboGarbage(a, b)
+  -- both are combos
+  if a.width ~= b.width then
+    -- combos are ordered by width
+    return a.width > b.width
+  else
+    -- same width ordered by time
+    -- deviation here, new garbage goes before old garbage so it refreshes their releaseTime
+    return a.frameEarned < b.frameEarned
+  end
+end
+
+local function orderFrameEarned(a, b)
   return a.frameEarned < b.frameEarned
 end
 
@@ -64,7 +76,7 @@ local function orderGarbage(garbageQueue, treatMetalAsCombo)
         return not a.isChain
       end
     else
-      return orderComboGarbage(a, b)
+      return orderFrameEarned(a, b)
     end
   end)
 
