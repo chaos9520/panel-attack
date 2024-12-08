@@ -648,13 +648,13 @@ function Stack:updateScoreWithCombo(comboSize)
       if comboSize == 3 then
         self.score = self.score + 27
       else
-        self.score = self.score + math.floor(math.ceil(math.log(factorial(comboSize)) * 10) * 10 * math.max(1, self.chain_counter))
+        self.score = self.score + math.floor(math.ceil(math.log(factorial(comboSize)) * 6.25) * 10 * math.max(1, self.chain_counter))
       end
     elseif (score_mode == consts.SCOREMODE_PDP64) then
       if comboSize == 3 then
         self.score = self.score
       else
-        self.score = self.score + math.floor((((comboSize - 3) * 100) * math.max(1, self.chain_counter)))
+        self.score = self.score + math.floor((((comboSize - 3) * 62.5) * math.max(1, self.chain_counter)))
       end
     end
   end
@@ -663,12 +663,12 @@ end
 function Stack:updateScoreWithChain()
   local chain_bonus = self.chain_counter
   if (score_mode == consts.SCOREMODE_TA) then
-    self.score = self.score + math.floor(math.ceil(math.log(factorial(chain_bonus)) * 100))
+    self.score = self.score + math.floor(math.ceil(math.log(factorial(chain_bonus)) * 62.5))
   elseif (score_mode == consts.SCOREMODE_PDP64) then
     if chain_bonus == 0 then
       self.score = self.score
     else
-      self.score = self.score + math.floor(((((chain_bonus - 1) * chain_bonus) / 2) * 50))
+      self.score = self.score + math.floor(((((chain_bonus - 1) * chain_bonus) / 2) * 31.25))
     end
   end
 end
